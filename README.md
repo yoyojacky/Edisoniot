@@ -15,4 +15,6 @@
 ### ./tp.sh
 ----
 ##Have fun
-
+##非常感谢Innospace（innomaker创客空间提供场地和组织活动）
+##非常感谢Intel提供的Edison开发板和技术支持
+##非常感谢蘑菇云创客空间提供套件及技术支持
