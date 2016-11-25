@@ -1,7 +1,7 @@
 #!/bin/bash
-for i in  `ls *.jpg |xargs`
+for i in  `ls *.png |xargs`
 do 
-curl --form "fileupload=@$i" http://www.yoyojacky.com/?upload
+curl -sT $i www.yoyojacky.com:9001
 sleep 1
 if [ $? -eq 0 ];then
 rm -rf $i
