@@ -6,11 +6,11 @@
 
 #include <mraa/gpio.h>
 
-int ir_state = 0;
+int sensor_state = 0;
 
 void *take_photo_thread (void *args){
     for(;;){
-        if(ir_state /* || 1 */){
+        if(sensor_state >= 500 ){
             char str[25];
             sprintf(str,"%d.jpg",(int) time((time_t*)NULL));
             take_photo(str);
@@ -18,8 +18,6 @@ void *take_photo_thread (void *args){
             char command[100];
             sprintf (command, "upload.sh %s", str);
             system (command);
-            //sprintf(command,"curl --form \"fileupload=@%s\"  http://www.lisperli.org/upload/?upload=yes",str);
-            //system  (command);
         }
         sleep(1);
     }
@@ -27,27 +25,27 @@ void *take_photo_thread (void *args){
 
 int main(int argc, char** argv)
 {
-    mraa_gpio_context ir_gpio = NULL;
+    mraa_gpio_context sensor_gpio = NULL;
 
-    ir_gpio = mraa_gpio_init(7);
+    sensor_gpio = mraa_gpio_init(5);
 
-    if (ir_gpio == NULL) {
-        fprintf(stdout, "Could not initilaize ir_gpio\n");
+    if (sensor_gpio == NULL) {
+        fprintf(stdout, "Could not initilaize sensor_gpio\n");
         return 1;
     }
 
-    mraa_gpio_dir(ir_gpio, MRAA_GPIO_IN);
+    mraa_gpio_dir(sensor_gpio, MRAA_GPIO_IN);
 
     pthread_t t;
     pthread_create(&t,NULL,take_photo_thread,NULL);
 
     for (;;) {
-        if( ir_state != mraa_gpio_read(ir_gpio)) {
-            ir_state = !ir_state;
-            printf("%d\n",ir_state);
+        if( sensor_state != mraa_gpio_read(sensor_gpio)) {
+            sensor_state = !sensor_state;
+            printf("%d\n",sensor_state);
             sleep(1);
         }
     }
-
+    
     return 0;
 }
